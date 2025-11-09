@@ -5,13 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Iris Flower Prediction</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+   
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-600 to-cyan-500 text-gray-800">
   
   <div class="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-full max-w-md">
     <h1 class="text-3xl font-bold text-center mb-6 text-indigo-700">🌸 Iris Flower Prediction</h1>
     
-    <form action="/predict" method="POST" class="space-y-4">
+    <form id="predictForm" action="/predict" method="POST" class="space-y-4" onsubmit="return validateForm()">
       
       <div>
         <label class="block font-medium text-gray-700 mb-1">Sepal Length (cm)</label>
@@ -43,6 +53,11 @@
       </div>
       {% endif %}
 
+      <!-- Warning Message -->
+      <div id="warning" class="hidden text-center text-red-600 bg-red-100 p-3 rounded-lg mb-3">
+        ⚠️ Please fill all attributes!
+      </div>
+
       <button type="submit" 
         class="w-full py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-500 text-white font-semibold shadow-lg hover:scale-[1.02] active:scale-100 transition">
         Predict
@@ -54,6 +69,31 @@
       </button>
     </form>
   </div>
+
+  <!-- JavaScript Validation -->
+  <script>
+    function validateForm() {
+      const inputs = document.querySelectorAll('#predictForm input[type="text"]');
+      const warning = document.getElementById('warning');
+      let emptyFound = false;
+
+      for (let input of inputs) {
+        if (input.value.trim() === '') {
+          emptyFound = true;
+          break;
+        }
+      }
+
+      if (emptyFound) {
+        warning.classList.remove('hidden');
+        warning.classList.add('fade-in');
+        return false; // stop form submission
+      } else {
+        warning.classList.add('hidden');
+        return true; // allow form submission
+      }
+    }
+  </script>
 
 </body>
 </html>
